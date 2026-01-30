@@ -1,0 +1,194 @@
+{
+  "info": {
+    "name": "TODO API",
+    "description": "Collection for testing the refactored TODO API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create TODO",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Complete code review\",\n  \"description\": \"Review and refactor the TODO API\",\n  \"isCompleted\": false\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7186/api/todos",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos"
+          ]
+        },
+        "description": "Creates a new TODO item"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All TODOs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7186/api/todos",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos"
+          ]
+        },
+        "description": "Retrieves all TODO items"
+      },
+      "response": []
+    },
+    {
+      "name": "Get TODO by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7186/api/todos/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos",
+            "1"
+          ]
+        },
+        "description": "Retrieves a specific TODO item by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Update TODO",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Complete code review - UPDATED\",\n  \"description\": \"Finished reviewing and refactoring\",\n  \"isCompleted\": true\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7186/api/todos/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos",
+            "1"
+          ]
+        },
+        "description": "Updates an existing TODO item"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete TODO",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7186/api/todos/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos",
+            "1"
+          ]
+        },
+        "description": "Deletes a TODO item by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Create TODO - Validation Error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"description\": \"This should fail validation\"\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7186/api/todos",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos"
+          ]
+        },
+        "description": "Test validation - empty title should return 400"
+      },
+      "response": []
+    },
+    {
+      "name": "Get TODO - Not Found",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7186/api/todos/999",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7186",
+          "path": [
+            "api",
+            "todos",
+            "999"
+          ]
+        },
+        "description": "Test 404 response for non-existent TODO"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7186",
+      "type": "string"
+    }
+  ]
+}

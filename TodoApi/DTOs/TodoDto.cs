@@ -1,18 +1,14 @@
-namespace TodoApi.Models
+namespace TodoApi.DTOs
 {
     /// <summary>
-    /// Domain model representing a TODO item
+    /// Data Transfer Object for TODO item responses
     /// </summary>
-    public class Todo
+    public class TodoDto
     {
         public int Id { get; set; }
-
         public string Title { get; set; } = string.Empty;
-
         public string? Description { get; set; }
-
         public bool IsCompleted { get; set; }
-
         public DateTime CreatedAt { get; set; }
     }
 }

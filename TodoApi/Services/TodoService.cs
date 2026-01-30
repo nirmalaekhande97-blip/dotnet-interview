@@ -1,111 +1,88 @@
-using Microsoft.Data.Sqlite;
+using TodoApi.DTOs;
 using TodoApi.Models;
+using TodoApi.Repositories;
 
 namespace TodoApi.Services
 {
-    public class TodoService
+    /// <summary>
+    /// Service implementation for TODO business logic
+    /// Orchestrates between controllers and repositories
+    /// </summary>
+    public class TodoService : ITodoService
     {
-        private string _connectionString = "Data Source=todos.db";
+        private readonly ITodoRepository _todoRepository;
+        private readonly ILogger<TodoService> _logger;
 
-        public TodoService()
+        public TodoService(ITodoRepository todoRepository, ILogger<TodoService> logger)
         {
+            _todoRepository = todoRepository ?? throw new ArgumentNullException(nameof(todoRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Todo CreateTodo(Todo todo)
+        public async Task<TodoDto> CreateTodoAsync(CreateTodoDto createDto)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
+            _logger.LogInformation("Creating new TODO item with title: {Title}", createDto.Title);
 
-            var command = connection.CreateCommand();
-            command.CommandText = $@"
-                INSERT INTO Todos (Title, Description, IsCompleted, CreatedAt)
-                VALUES ('{todo.Title}', '{todo.Description}', {(todo.IsCompleted ? 1 : 0)}, '{DateTime.UtcNow.ToString("o")}');
-                SELECT last_insert_rowid();
-            ";
-
-            var id = Convert.ToInt32(command.ExecuteScalar());
-            todo.Id = id;
-            todo.CreatedAt = DateTime.UtcNow;
-            return todo;
-        }
-
-        public List<Todo> GetAllTodos()
-        {
-            var todos = new List<Todo>();
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM Todos";
-
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
+            var todo = new Todo
             {
-                todos.Add(new Todo
-                {
-                    Id = reader.GetInt32(0),
-                    Title = reader.GetString(1),
-                    Description = reader.GetString(2),
-                    IsCompleted = reader.GetInt32(3) == 1,
-                    CreatedAt = DateTime.Parse(reader.GetString(4))
-                });
-            }
+                Title = createDto.Title,
+                Description = createDto.Description,
+                IsCompleted = createDto.IsCompleted,
+                CreatedAt = DateTime.UtcNow
+            };
 
-            return todos;
+            var createdTodo = await _todoRepository.CreateAsync(todo);
+            return MapToDto(createdTodo);
         }
 
-        public Todo GetTodoById(int id)
+        public async Task<IEnumerable<TodoDto>> GetAllTodosAsync()
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
+            _logger.LogInformation("Retrieving all TODO items");
+            var todos = await _todoRepository.GetAllAsync();
+            return todos.Select(MapToDto);
+        }
 
-            var command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM Todos WHERE Id = {id}";
+        public async Task<TodoDto?> GetTodoByIdAsync(int id)
+        {
+            _logger.LogInformation("Retrieving TODO item with ID: {TodoId}", id);
+            var todo = await _todoRepository.GetByIdAsync(id);
+            return todo != null ? MapToDto(todo) : null;
+        }
 
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
+        public async Task<TodoDto?> UpdateTodoAsync(int id, UpdateTodoDto updateDto)
+        {
+            _logger.LogInformation("Updating TODO item with ID: {TodoId}", id);
+
+            var todo = new Todo
             {
-                return new Todo
-                {
-                    Id = reader.GetInt32(0),
-                    Title = reader.GetString(1),
-                    Description = reader.GetString(2),
-                    IsCompleted = reader.GetInt32(3) == 1,
-                    CreatedAt = DateTime.Parse(reader.GetString(4))
-                };
-            }
+                Title = updateDto.Title,
+                Description = updateDto.Description,
+                IsCompleted = updateDto.IsCompleted
+            };
 
-            return null;
+            var updatedTodo = await _todoRepository.UpdateAsync(id, todo);
+            return updatedTodo != null ? MapToDto(updatedTodo) : null;
         }
 
-        public Todo UpdateTodo(int id, Todo todo)
+        public async Task<bool> DeleteTodoAsync(int id)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = $@"
-                UPDATE Todos
-                SET Title = '{todo.Title}', Description = '{todo.Description}', IsCompleted = {(todo.IsCompleted ? 1 : 0)}
-                WHERE Id = {id}
-            ";
-
-            var rowsAffected = command.ExecuteNonQuery();
-
-            todo.Id = id;
-            return todo;
+            _logger.LogInformation("Deleting TODO item with ID: {TodoId}", id);
+            return await _todoRepository.DeleteAsync(id);
         }
 
-        public bool DeleteTodo(int id)
+        /// <summary>
+        /// Maps a Todo domain model to a TodoDto
+        /// </summary>
+        private static TodoDto MapToDto(Todo todo)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = $"DELETE FROM Todos WHERE Id = {id}";
-
-            var rowsAffected = command.ExecuteNonQuery();
-            return rowsAffected > 0;
+            return new TodoDto
+            {
+                Id = todo.Id,
+                Title = todo.Title,
+                Description = todo.Description,
+                IsCompleted = todo.IsCompleted,
+                CreatedAt = todo.CreatedAt
+            };
         }
     }
 }
