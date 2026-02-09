@@ -5,10 +5,6 @@ using TodoApi.Models;
 
 namespace TodoApi.Repositories
 {
-    /// <summary>
-    /// SQLite implementation of the TODO repository
-    /// Uses parameterized queries to prevent SQL injection
-    /// </summary>
     public class TodoRepository : ITodoRepository
     {
         private readonly string _connectionString;
@@ -179,9 +175,6 @@ namespace TodoApi.Repositories
             }
         }
 
-        /// <summary>
-        /// Maps a SqliteDataReader row to a Todo object
-        /// </summary>
         private static Todo MapReaderToTodo(SqliteDataReader reader)
         {
             return new Todo

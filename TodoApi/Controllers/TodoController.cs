@@ -4,10 +4,6 @@ using TodoApi.Services;
 
 namespace TodoApi.Controllers
 {
-    /// <summary>
-    /// Controller for managing TODO items
-    /// Provides RESTful API endpoints following HTTP semantics
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
@@ -22,13 +18,6 @@ namespace TodoApi.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Creates a new TODO item
-        /// </summary>
-        /// <param name="createDto">The TODO item to create</param>
-        /// <returns>The created TODO item</returns>
-        /// <response code="201">Returns the newly created item</response>
-        /// <response code="400">If the item is invalid</response>
         [HttpPost]
         [ProducesResponseType(typeof(TodoDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,11 +42,6 @@ namespace TodoApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves all TODO items
-        /// </summary>
-        /// <returns>A list of all TODO items</returns>
-        /// <response code="200">Returns the list of TODO items</response>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<TodoDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TodoDto>>> GetAllTodos()
@@ -75,13 +59,6 @@ namespace TodoApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Retrieves a specific TODO item by ID
-        /// </summary>
-        /// <param name="id">The ID of the TODO item</param>
-        /// <returns>The requested TODO item</returns>
-        /// <response code="200">Returns the TODO item</response>
-        /// <response code="404">If the item is not found</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,15 +83,6 @@ namespace TodoApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Updates an existing TODO item
-        /// </summary>
-        /// <param name="id">The ID of the TODO item to update</param>
-        /// <param name="updateDto">The updated TODO item data</param>
-        /// <returns>The updated TODO item</returns>
-        /// <response code="200">Returns the updated item</response>
-        /// <response code="400">If the item is invalid</response>
-        /// <response code="404">If the item is not found</response>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -146,13 +114,6 @@ namespace TodoApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Deletes a TODO item by ID
-        /// </summary>
-        /// <param name="id">The ID of the TODO item to delete</param>
-        /// <returns>No content if successful</returns>
-        /// <response code="204">If the item was successfully deleted</response>
-        /// <response code="404">If the item is not found</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

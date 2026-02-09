@@ -2,9 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.DTOs
 {
-    /// <summary>
-    /// Data Transfer Object for updating an existing TODO item
-    /// </summary>
     public class UpdateTodoDto
     {
         [Required(ErrorMessage = "Title is required")]

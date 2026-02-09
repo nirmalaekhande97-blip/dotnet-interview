@@ -4,10 +4,6 @@ using TodoApi.Repositories;
 
 namespace TodoApi.Services
 {
-    /// <summary>
-    /// Service implementation for TODO business logic
-    /// Orchestrates between controllers and repositories
-    /// </summary>
     public class TodoService : ITodoService
     {
         private readonly ITodoRepository _todoRepository;
@@ -70,9 +66,6 @@ namespace TodoApi.Services
             return await _todoRepository.DeleteAsync(id);
         }
 
-        /// <summary>
-        /// Maps a Todo domain model to a TodoDto
-        /// </summary>
         private static TodoDto MapToDto(Todo todo)
         {
             return new TodoDto

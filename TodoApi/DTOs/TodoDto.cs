@@ -1,8 +1,5 @@
 namespace TodoApi.DTOs
 {
-    /// <summary>
-    /// Data Transfer Object for TODO item responses
-    /// </summary>
     public class TodoDto
     {
         public int Id { get; set; }
